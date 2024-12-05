@@ -3,6 +3,7 @@ import { Link, useLocation, Outlet } from 'react-router-dom';
 import { Users, Building2, BarChart3, Settings, LogOut, Menu, X } from 'lucide-react';
 import { getAuthStore } from '../../stores/auth';
 import { Button } from '../ui/Button';
+import { Header } from './Header';
 
 const navigation = [
   { name: 'Committees', href: '/dashboard/committees', icon: Building2 },
@@ -18,9 +19,11 @@ export const DashboardLayout = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="flex h-screen">
+      <Header />
+      
+      <div className="flex h-[calc(100vh-4rem)]">
         {/* Mobile menu button */}
-        <div className="lg:hidden fixed top-4 left-4 z-50">
+        <div className="lg:hidden fixed top-20 left-4 z-50">
           <Button
             variant="secondary"
             size="sm"
@@ -37,24 +40,12 @@ export const DashboardLayout = () => {
 
         {/* Sidebar */}
         <div className={`
-          fixed inset-y-0 left-0 z-40 w-64 transform bg-white transition-transform duration-200 ease-in-out
+          fixed inset-y-16 left-0 z-40 w-64 transform bg-white transition-transform duration-200 ease-in-out
           lg:relative lg:translate-x-0
           ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
           <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between flex-shrink-0 px-4 py-5">
-              <Link to="/" className="text-xl font-bold">CDOS Tarn</Link>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="lg:hidden rounded-full p-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <X className="h-5 w-5" />
-              </Button>
-            </div>
-
-            <nav className="flex-1 px-2 space-y-1">
+            <nav className="flex-1 px-2 py-4 space-y-1">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -80,35 +71,6 @@ export const DashboardLayout = () => {
                 );
               })}
             </nav>
-
-            <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
-              <div className="flex-shrink-0 w-full group block">
-                <div className="flex items-center">
-                  <div>
-                    <div className="inline-flex items-center justify-center h-8 w-8 bg-gray-500 rounded-full">
-                      <span className="text-sm font-medium leading-none text-white">
-                        {user?.firstName?.[0]}
-                        {user?.lastName?.[0]}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700">
-                      {user?.firstName} {user?.lastName}
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center text-sm text-gray-500 hover:text-gray-700"
-                      onClick={() => logout()}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign out
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

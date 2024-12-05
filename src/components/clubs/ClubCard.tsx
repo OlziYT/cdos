@@ -29,19 +29,19 @@ export const ClubCard = ({ club, onShowOnMap }: ClubCardProps) => {
       <div className="p-4 space-y-4">
         <div className="flex flex-wrap gap-1">
           {club.features.handicapAccess && (
-            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               Handicap
             </span>
           )}
           {club.features.sportHealth && (
-            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
               Sport-santé
             </span>
           )}
           {club.tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800"
+              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
             >
               {tag}
             </span>
@@ -52,7 +52,7 @@ export const ClubCard = ({ club, onShowOnMap }: ClubCardProps) => {
           <Button
             variant="outline"
             size="sm"
-            className="flex-1 sm:flex-initial"
+            className="flex-1 sm:flex-initial rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors"
             onClick={onShowOnMap}
           >
             <Target className="h-4 w-4 sm:mr-1" />
@@ -60,7 +60,7 @@ export const ClubCard = ({ club, onShowOnMap }: ClubCardProps) => {
           </Button>
           <Button
             size="sm"
-            className="flex-1 sm:flex-initial"
+            className="flex-1 sm:flex-initial rounded-full bg-blue-600 hover:bg-blue-700 transition-colors"
             onClick={() => {/* TODO: Implement modal with details */}}
           >
             <Info className="h-4 w-4 sm:mr-1" />
