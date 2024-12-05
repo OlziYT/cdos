@@ -10,11 +10,11 @@ export const ClubsPage = () => {
   }, [fetchClubs]);
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this club?')) {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce club ?')) {
       try {
         await deleteClub(id);
       } catch (error) {
-        console.error('Failed to delete club:', error);
+        console.error('Échec de la suppression du club:', error);
       }
     }
   };
@@ -23,7 +23,7 @@ export const ClubsPage = () => {
     try {
       await importClubs(file);
     } catch (error) {
-      console.error('Failed to import clubs:', error);
+      console.error('Échec de l\'importation des clubs:', error);
     }
   };
 

@@ -12,9 +12,9 @@ export const Header = () => {
   const { user } = getAuthStore();
 
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-blue-800 relative z-50">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header className="bg-gradient-to-r from-blue-600 to-blue-800 h-16 sticky top-0 z-50">
+      <nav className="h-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-full items-center justify-between">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <Trophy className="h-8 w-8 text-white" />

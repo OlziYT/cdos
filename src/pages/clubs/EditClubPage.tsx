@@ -39,7 +39,7 @@ export const EditClubPage = () => {
       await updateClub(id!, data);
       navigate('/dashboard/clubs');
     } catch (error) {
-      console.error('Failed to update club:', error);
+      console.error('Échec de la mise à jour du club:', error);
     }
   };
 
@@ -48,10 +48,10 @@ export const EditClubPage = () => {
       <div className="md:flex md:items-center md:justify-between mb-8">
         <div>
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-            Edit Club
+            Modifier le club
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Update the club's information.
+            Mettre à jour les informations du club.
           </p>
         </div>
       </div>
