@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ClubForm } from '../../components/clubs/ClubForm';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useClubStore } from '../../stores/club';
+import { useThemeStore } from '../../stores/theme';
+import { ClubForm } from '../../components/clubs/ClubForm';
 import type { ClubFormData } from '../../types/club';
 
 export const EditClubPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { clubs, updateClub, isLoading } = useClubStore();
+  const { isDark } = useThemeStore();
 
   const club = clubs.find((c) => c.id === id);
 
@@ -47,16 +49,16 @@ export const EditClubPage = () => {
     <div>
       <div className="md:flex md:items-center md:justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+          <h2 className={`text-2xl font-bold leading-7 ${isDark ? 'text-white' : 'text-gray-900'} sm:truncate sm:text-3xl sm:tracking-tight`}>
             Modifier le club
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             Mettre à jour les informations du club.
           </p>
         </div>
       </div>
 
-      <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+      <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm ring-1 ${isDark ? 'ring-gray-700' : 'ring-gray-900/5'} sm:rounded-xl md:col-span-2`}>
         <div className="px-4 py-6 sm:p-8">
           <ClubForm
             initialData={initialData}

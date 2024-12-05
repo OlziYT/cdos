@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { User, LayoutDashboard, Search, LogOut } from 'lucide-react';
 import { getAuthStore } from '../../stores/auth';
+import { UserAvatar } from './UserAvatar';
 
 interface UserMenuProps {
   isOpen: boolean;
@@ -11,14 +12,19 @@ interface UserMenuProps {
 export const UserMenu = ({ isOpen, onClose }: UserMenuProps) => {
   const { user, logout } = getAuthStore();
 
-  if (!isOpen) return null;
+  if (!isOpen || !user) return null;
 
   return (
     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
       <div className="py-1" role="menu">
         <div className="px-4 py-2 border-b">
-          <p className="text-sm font-medium text-gray-900">{user?.firstName} {user?.lastName}</p>
-          <p className="text-xs text-gray-500">{user?.email}</p>
+          <div className="flex items-center gap-3">
+            <UserAvatar user={user} size="sm" />
+            <div>
+              <p className="text-sm font-medium text-gray-900">{user.firstName} {user.lastName}</p>
+              <p className="text-xs text-gray-500">{user.email}</p>
+            </div>
+          </div>
         </div>
         
         <Link

@@ -1,12 +1,13 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClubForm } from '../../components/clubs/ClubForm';
 import { useClubStore } from '../../stores/club';
+import { useThemeStore } from '../../stores/theme';
+import { ClubForm } from '../../components/clubs/ClubForm';
 import type { ClubFormData } from '../../types/club';
 
 export const NewClubPage = () => {
   const navigate = useNavigate();
   const { createClub, isLoading } = useClubStore();
+  const { isDark } = useThemeStore();
 
   const handleSubmit = async (data: ClubFormData) => {
     try {
@@ -21,16 +22,16 @@ export const NewClubPage = () => {
     <div>
       <div className="md:flex md:items-center md:justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+          <h2 className={`text-2xl font-bold leading-7 ${isDark ? 'text-white' : 'text-gray-900'} sm:truncate sm:text-3xl sm:tracking-tight`}>
             New Club
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             Create a new sports club in the Tarn department.
           </p>
         </div>
       </div>
 
-      <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+      <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm ring-1 ${isDark ? 'ring-gray-700' : 'ring-gray-900/5'} sm:rounded-xl md:col-span-2`}>
         <div className="px-4 py-6 sm:p-8">
           <ClubForm
             onSubmit={handleSubmit}

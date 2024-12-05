@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { Users, Building2, BarChart3, Settings, Menu, X, Sun, Moon } from 'lucide-react';
+import { Users, Building2, BarChart3, Settings, Menu, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Header } from './Header';
 import { useThemeStore } from '../../stores/theme';
@@ -15,7 +15,7 @@ const navigation = [
 export const DashboardLayout = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isDark, toggleTheme } = useThemeStore();
+  const { isDark } = useThemeStore();
 
   return (
     <div className={`min-h-screen ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
@@ -34,22 +34,6 @@ export const DashboardLayout = () => {
               <X className="h-5 w-5" />
             ) : (
               <Menu className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
-
-        {/* Theme toggle */}
-        <div className="fixed top-20 right-4 z-50">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleTheme}
-            className={`rounded-full p-2 ${isDark ? 'bg-gray-800 text-white' : 'bg-white'} shadow-sm`}
-          >
-            {isDark ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
             )}
           </Button>
         </div>

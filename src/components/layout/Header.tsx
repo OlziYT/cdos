@@ -1,15 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Trophy, Users, LogIn, Menu } from 'lucide-react';
-import { Button } from '../ui/Button';
+import { Trophy, Menu } from 'lucide-react';
 import { MobileMenu } from './MobileMenu';
-import { UserMenu } from './UserMenu';
-import { getAuthStore } from '../../stores/auth';
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { user } = getAuthStore();
 
   return (
     <header className="bg-gradient-to-r from-blue-600 to-blue-800 h-16 sticky top-0 z-50">
@@ -22,55 +17,15 @@ export const Header = () => {
             </Link>
           </div>
           
-          <div className="hidden lg:flex items-center space-x-4">
-            <Link 
-              to="/search" 
-              className="text-gray-100 hover:text-white flex items-center space-x-1"
-            >
-              <Users className="h-5 w-5" />
-              <span>Clubs</span>
-            </Link>
-            
-            {user ? (
-              <div className="relative">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="rounded-full flex items-center space-x-2"
-                >
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-sm font-medium text-gray-600">
-                      {user.firstName[0]}
-                      {user.lastName[0]}
-                    </span>
-                  </div>
-                  <span className="hidden sm:inline">{user.firstName}</span>
-                </Button>
-                <UserMenu
-                  isOpen={isUserMenuOpen}
-                  onClose={() => setIsUserMenuOpen(false)}
-                />
-              </div>
-            ) : (
-              <Link to="/login">
-                <Button 
-                  variant="secondary"
-                  size="sm"
-                  className="rounded-full flex items-center space-x-2"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>Connexion</span>
-                </Button>
-              </Link>
-            )}
-          </div>
-
           <button
-            className="lg:hidden text-white p-2"
+            className="relative group p-2 rounded-lg hover:bg-white/10 transition-colors"
             onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Menu"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-6 w-6 text-white" />
+            <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 text-[10px] text-white/80 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              Menu
+            </span>
           </button>
         </div>
       </nav>

@@ -2,6 +2,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { ClubFilters, type FilterValues } from './ClubFilters';
+import { useThemeStore } from '../../stores/theme';
 
 interface MobileFiltersDrawerProps {
   isOpen: boolean;
@@ -18,6 +19,8 @@ export const MobileFiltersDrawer = ({
   onChange,
   committees,
 }: MobileFiltersDrawerProps) => {
+  const { isDark } = useThemeStore();
+
   return (
     <div
       className={`fixed inset-0 z-50 lg:hidden ${
@@ -31,16 +34,16 @@ export const MobileFiltersDrawer = ({
       />
 
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-xs bg-white shadow-xl">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-medium">Filtres</h2>
+      <div className={`fixed inset-y-0 right-0 w-full max-w-xs ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-xl`}>
+        <div className={`flex items-center justify-between p-4 ${isDark ? 'border-gray-700' : 'border-gray-200'} border-b`}>
+          <h2 className={`text-lg font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>Filtres</h2>
           <Button
-            variant="ghost"
+            variant={isDark ? "ghost-dark" : "ghost"}
             size="sm"
             onClick={onClose}
             className="rounded-full p-2"
           >
-            <X className="h-5 w-5" />
+            <X className={`h-5 w-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
           </Button>
         </div>
 
@@ -50,11 +53,12 @@ export const MobileFiltersDrawer = ({
               values={values}
               onChange={onChange}
               committees={committees}
+              isDark={isDark}
             />
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t">
+        <div className={`absolute bottom-0 left-0 right-0 p-4 ${isDark ? 'bg-gray-800' : 'bg-white'} ${isDark ? 'border-gray-700' : 'border-gray-200'} border-t`}>
           <Button onClick={onClose} className="w-full">
             Appliquer les filtres
           </Button>
