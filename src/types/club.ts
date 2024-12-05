@@ -6,6 +6,7 @@ export interface Club {
   rna: string;
   email: string;
   phone: string;
+  imageUrl?: string;
   address: {
     street: string;
     city: string;
@@ -24,6 +25,11 @@ export interface Club {
     handicapAccess: boolean;
     sportHealth: boolean;
   };
+  pricing?: {
+    range: string;
+    details: string;
+  };
+  ageGroups?: string[];
   createdAt: string;
   updatedAt: string;
 }

@@ -10,16 +10,17 @@ interface ClubMapProps {
   zoom?: number;
 }
 
-export const ClubMap: React.FC<ClubMapProps> = ({
+export const ClubMap = React.forwardRef<any, ClubMapProps>(({
   clubs,
   center = [43.9277, 2.1478], // Albi coordinates
   zoom = 10,
-}) => {
+}, ref) => {
   return (
     <MapContainer
       center={center}
       zoom={zoom}
-      className="h-[500px] w-full rounded-lg"
+      className="h-[500px] w-full rounded-lg z-0"
+      ref={ref}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -55,4 +56,6 @@ export const ClubMap: React.FC<ClubMapProps> = ({
       ))}
     </MapContainer>
   );
-};
+});
+
+ClubMap.displayName = 'ClubMap';
