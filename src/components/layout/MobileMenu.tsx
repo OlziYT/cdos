@@ -54,7 +54,13 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         {user && (
           <div className={`p-4 ${isDark ? 'bg-gray-800/50' : 'bg-gray-50'} border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
             <div className="flex items-center gap-3">
-              <UserAvatar user={user} size="lg" isDark={isDark} />
+              {user ? (
+                <UserAvatar user={user} isDark={isDark} />
+              ) : (
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-blue-100'} flex items-center justify-center`}>
+                  <User className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-blue-600'}`} />
+                </div>
+              )}
               <div>
                 <p className={`font-medium ${isDark ? 'text-white' : 'text-gray-900'}`}>
                   {user.firstName} {user.lastName}

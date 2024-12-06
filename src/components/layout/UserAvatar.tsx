@@ -21,8 +21,8 @@ export const UserAvatar = ({ user, size = 'md', isDark = false }: UserAvatarProp
       } flex items-center justify-center overflow-hidden`}
     >
       <span className={`font-medium ${isDark ? 'text-gray-300' : 'text-blue-600'}`}>
-        {user.firstName[0]}
-        {user.lastName[0]}
+        {user.firstName?.charAt(0) ?? ''}
+        {user.lastName?.charAt(0) ?? ''}
       </span>
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200" />
     </div>

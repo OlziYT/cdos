@@ -14,7 +14,7 @@ export const NewClubPage = () => {
       await createClub(data);
       navigate('/dashboard/clubs');
     } catch (error) {
-      console.error('Failed to create club:', error);
+      console.error('Erreur lors de la création du club:', error);
     }
   };
 
@@ -23,10 +23,10 @@ export const NewClubPage = () => {
       <div className="md:flex md:items-center md:justify-between mb-8">
         <div>
           <h2 className={`text-2xl font-bold leading-7 ${isDark ? 'text-white' : 'text-gray-900'} sm:truncate sm:text-3xl sm:tracking-tight`}>
-            New Club
+            Nouveau Club
           </h2>
           <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            Create a new sports club in the Tarn department.
+            Créer un nouveau club sportif dans le département du Tarn.
           </p>
         </div>
       </div>
