@@ -23,9 +23,6 @@ export const Header = () => {
             aria-label="Menu"
           >
             <Menu className="h-6 w-6 text-white" />
-            <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 text-[10px] text-white/80 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-              Menu
-            </span>
           </button>
         </div>
       </nav>
