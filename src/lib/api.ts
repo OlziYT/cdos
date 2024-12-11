@@ -1,102 +1,192 @@
-import axios from 'axios';
-import { getAuthStore } from '../stores/auth';
-import { mockUsers } from './mockData';
+import { supabase } from './supabase';
+import { TABLES } from './supabase';
+import type { ClubFormData } from '../types/club';
+import type { CommitteeFormData } from '../types/committee';
 
-// Mock API for development
 const api = {
-  post: async (url: string, data: any) => {
-    // Mock login endpoint
-    if (url === '/auth/login') {
-      const user = mockUsers.find(u => 
-        u.email === data.email && data.password === 'admin123456789'
-      );
-      
-      if (user) {
-        return {
-          data: {
-            user: { ...user, password: undefined },
-            token: 'mock-jwt-token'
-          }
-        };
-      }
-      throw new Error('Invalid credentials');
-    }
-    
-    // For other endpoints, simulate API call
-    return { data: {} };
-  },
-  
   get: async (url: string) => {
-    // Mock data for committees
-    if (url === '/committees') {
-      return {
-        data: [
-          {
-            id: '1',
-            name: 'Comité Départemental Olympique et Sportif du Tarn',
-            siret: '12345678901234',
-            rna: 'W123456789',
-            email: 'contact@cdos81.fr',
-            phone: '0563123456',
-            address: {
-              street: '148 Avenue Dembourg',
-              city: 'Albi',
-              postalCode: '81000'
-            },
-            stats: {
-              totalMembers: 1500,
-              totalClubs: 25,
-              lastUpdated: new Date().toISOString()
-            },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        ]
-      };
-    }
+    try {
+      console.log('URL:', url);
+      if (url === '/committees') {
+        const { data, error } = await supabase
+          .from(TABLES.COMMITTEES)
+          .select('*');
+        
+        if (error) throw error;
+        return { data };
+      }
 
-    // Mock data for clubs
-    if (url === '/clubs') {
-      return {
-        data: [
-          {
-            id: '1',
-            name: 'US Albi',
-            committeeId: '1',
-            siret: '98765432101234',
-            rna: 'W987654321',
-            email: 'contact@usalbi.fr',
-            phone: '0563789456',
-            address: {
-              street: '283 Avenue Colonel Teyssier',
-              city: 'Albi',
-              postalCode: '81000',
-              location: {
-                lat: 43.9277,
-                lng: 2.1478
-              }
-            },
-            tags: ['Football', 'Formation'],
-            stats: {
-              totalMembers: 350,
-              lastUpdated: new Date().toISOString()
-            },
-            features: {
-              handicapAccess: true,
-              sportHealth: true
-            },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        ]
-      };
-    }
+      if (url === '/clubs') {
+        const { data, error } = await supabase
+          .from(TABLES.CLUBS)
+          .select('*');
+        
+        if (error) throw error;
+        return { data };
+      }
 
-    return { data: [] };
+      if (url.startsWith('/committees/') && url.endsWith('/clubs')) {
+        const committeeId = url.split('/')[2];
+        const { data, error } = await supabase
+          .from(TABLES.CLUBS)
+          .select('*')
+          .eq('committeeId', committeeId);
+        
+        if (error) throw error;
+        return { data };
+      }
+
+      throw new Error(`Endpoint not found: ${url}`);
+    } catch (error) {
+      console.error('API Get Error:', error);
+      throw error;
+    }
   },
 
-  put: async () => ({ data: {} }),
-  delete: async () => ({ data: {} })
+  post: async (url: string, data: ClubFormData | CommitteeFormData) => {
+    try {
+      console.log('Data to insert:', data);
+      console.log('URL:', url);
+      if (url === '/clubs') {
+        const { data: newClub, error } = await supabase
+          .from(TABLES.CLUBS)
+          .insert([{
+            ...data,
+            street: data.street,
+            city: data.city,
+            postalCode: data.postalCode,
+            features: {
+              handicapAccess: 'handicapAccess' in data ? data.handicapAccess : false,
+              sportHealth: 'sportHealth' in data ? data.sportHealth : false
+            },
+            stats: {
+              totalMembers: 0,
+              lastUpdated: new Date().toISOString()
+            },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }])
+          .select()
+          .single();
+        
+        if (error) throw error;
+        return { data: newClub };
+      }
+
+      if (url === '/committees') {
+        const { data: newCommittee, error } = await supabase
+          .from(TABLES.COMMITTEES)
+          .insert([{
+            ...data,
+            street: data.street,
+            city: data.city,
+            postalCode: data.postalCode,
+            stats: {
+              totalMembers: 0,
+              totalClubs: 0,
+              lastUpdated: new Date().toISOString()
+            },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          }])
+          .select()
+          .single();
+        
+        if (error) throw error;
+        return { data: newCommittee };
+      }
+
+      throw new Error(`Endpoint not found: ${url}`);
+    } catch (error) {
+      console.error('API Post Error:', error);
+      throw error;
+    }
+  },
+
+  put: async (url: string, data: ClubFormData | CommitteeFormData) => {
+    try {
+      console.log('Data to update:', data);
+      console.log('URL:', url);
+      const id = url.split('/')[2];
+
+      if (url.startsWith('/clubs/')) {
+        const { data: updatedClub, error } = await supabase
+          .from(TABLES.CLUBS)
+          .update({
+            ...data,
+            street: data.street,
+            city: data.city,
+            postalCode: data.postalCode,
+            features: {
+              handicapAccess: 'handicapAccess' in data ? data.handicapAccess : false,
+              sportHealth: 'sportHealth' in data ? data.sportHealth : false
+            },
+            updatedAt: new Date().toISOString()
+          })
+          .eq('id', id)
+          .select()
+          .single();
+        
+        if (error) throw error;
+        return { data: updatedClub };
+      }
+
+      if (url.startsWith('/committees/')) {
+        const { data: updatedCommittee, error } = await supabase
+          .from(TABLES.COMMITTEES)
+          .update({
+            ...data,
+            street: data.street,
+            city: data.city,
+            postalCode: data.postalCode,
+            updatedAt: new Date().toISOString()
+          })
+          .eq('id', id)
+          .select()
+          .single();
+        
+        if (error) throw error;
+        return { data: updatedCommittee };
+      }
+
+      throw new Error(`Endpoint not found: ${url}`);
+    } catch (error) {
+      console.error('API Put Error:', error);
+      throw error;
+    }
+  },
+
+  delete: async (url: string) => {
+    try {
+      console.log('URL:', url);
+      const id = url.split('/')[2];
+
+      if (url.startsWith('/clubs/')) {
+        const { error } = await supabase
+          .from(TABLES.CLUBS)
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        return { data: { success: true } };
+      }
+
+      if (url.startsWith('/committees/')) {
+        const { error } = await supabase
+          .from(TABLES.COMMITTEES)
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        return { data: { success: true } };
+      }
+
+      throw new Error(`Endpoint not found: ${url}`);
+    } catch (error) {
+      console.error('API Delete Error:', error);
+      throw error;
+    }
+  }
 };
 
 export default api;

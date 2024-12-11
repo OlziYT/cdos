@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { X, Home, Search, LayoutDashboard, LogIn, User, LogOut, Moon, Sun } from 'lucide-react';
 import { Button } from '../ui/Button';
-import { getAuthStore } from '../../stores/auth';
+import { useAuthStore } from '../../stores/auth';
 import { useThemeStore } from '../../stores/theme';
 import { UserAvatar } from './UserAvatar';
 
@@ -11,7 +11,7 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
-  const { user, logout } = getAuthStore();
+  const { user, logout } = useAuthStore();
   const { isDark, toggleTheme } = useThemeStore();
 
   return (

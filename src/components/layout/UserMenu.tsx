@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { User, LayoutDashboard, Search, LogOut } from 'lucide-react';
-import { getAuthStore } from '../../stores/auth';
+import { useAuthStore } from '../../stores/auth';
 import { UserAvatar } from './UserAvatar';
 
 interface UserMenuProps {
@@ -10,7 +10,7 @@ interface UserMenuProps {
 }
 
 export const UserMenu = ({ isOpen, onClose }: UserMenuProps) => {
-  const { user, logout } = getAuthStore();
+  const { user, logout } = useAuthStore();
 
   if (!isOpen || !user) return null;
 

@@ -10,10 +10,10 @@ import { EditCommitteePage } from './pages/committees/EditCommitteePage';
 import { ClubsPage } from './pages/clubs/ClubsPage';
 import { NewClubPage } from './pages/clubs/NewClubPage';
 import { EditClubPage } from './pages/clubs/EditClubPage';
-import { getAuthStore } from './stores/auth';
+import { useAuthStore } from './stores/auth';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user } = getAuthStore();
+  const { user } = useAuthStore();
   if (!user) return <Navigate to="/login" replace />;
   return <>{children}</>;
 };

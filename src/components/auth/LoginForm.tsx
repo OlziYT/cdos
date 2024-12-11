@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { getAuthStore } from '../../stores/auth';
+import { useAuthStore } from '../../stores/auth';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 
@@ -16,7 +16,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { login, isLoading, error } = getAuthStore();
+  const { login, isLoading, error } = useAuthStore();
   
   const {
     register,
