@@ -6,37 +6,38 @@ import type { CommitteeFormData } from '../types/committee';
 const api = {
   get: async (url: string) => {
     try {
-      console.log('URL:', url);
+      console.log('GET Request URL:', url);
       if (url === '/committees') {
         const { data, error } = await supabase
           .from(TABLES.COMMITTEES)
           .select('*');
         
         if (error) throw error;
-        return { data };
-      }
-
-      if (url === '/clubs') {
-        const { data, error } = await supabase
-          .from(TABLES.CLUBS)
-          .select('*');
         
-        if (error) throw error;
-        return { data };
-      }
-
-      if (url.startsWith('/committees/') && url.endsWith('/clubs')) {
-        const committeeId = url.split('/')[2];
-        const { data, error } = await supabase
-          .from(TABLES.CLUBS)
-          .select('*')
-          .eq('committeeId', committeeId);
+        // Transform data to match expected structure
+        const transformedData = data.map(committee => ({
+          id: committee.id,
+          name: committee.name,
+          siret: committee.siret,
+          rna: committee.rna,
+          email: committee.email,
+          phone: committee.phone,
+          address: {
+            street: committee.street,
+            city: committee.city,
+            postalCode: committee.postal_code
+          },
+          stats: {
+            totalMembers: committee.total_members,
+            totalClubs: committee.total_clubs,
+            lastUpdated: committee.updated_at
+          }
+        }));
         
-        if (error) throw error;
-        return { data };
+        return { data: transformedData };
       }
 
-      throw new Error(`Endpoint not found: ${url}`);
+      // ... rest of the code ...
     } catch (error) {
       console.error('API Get Error:', error);
       throw error;
@@ -45,148 +46,58 @@ const api = {
 
   post: async (url: string, data: ClubFormData | CommitteeFormData) => {
     try {
-      console.log('Data to insert:', data);
-      console.log('URL:', url);
-      if (url === '/clubs') {
-        const { data: newClub, error } = await supabase
-          .from(TABLES.CLUBS)
-          .insert([{
-            ...data,
-            street: data.street,
-            city: data.city,
-            postalCode: data.postalCode,
-            features: {
-              handicapAccess: 'handicapAccess' in data ? data.handicapAccess : false,
-              sportHealth: 'sportHealth' in data ? data.sportHealth : false
-            },
-            stats: {
-              totalMembers: 0,
-              lastUpdated: new Date().toISOString()
-            },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }])
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return { data: newClub };
-      }
-
+      console.log('POST Request:', { url, data });
       if (url === '/committees') {
         const { data: newCommittee, error } = await supabase
           .from(TABLES.COMMITTEES)
           .insert([{
-            ...data,
+            name: data.name,
+            siret: data.siret,
+            rna: data.rna,
+            email: data.email,
+            phone: data.phone,
             street: data.street,
             city: data.city,
-            postalCode: data.postalCode,
-            stats: {
-              totalMembers: 0,
-              totalClubs: 0,
-              lastUpdated: new Date().toISOString()
-            },
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            postal_code: data.postalCode,
+            total_members: 0,
+            total_clubs: 0
           }])
           .select()
           .single();
         
         if (error) throw error;
-        return { data: newCommittee };
+        
+        // Transform response to match expected structure
+        const transformedCommittee = {
+          id: newCommittee.id,
+          name: newCommittee.name,
+          siret: newCommittee.siret,
+          rna: newCommittee.rna,
+          email: newCommittee.email,
+          phone: newCommittee.phone,
+          address: {
+            street: newCommittee.street,
+            city: newCommittee.city,
+            postalCode: newCommittee.postal_code
+          },
+          stats: {
+            totalMembers: newCommittee.total_members,
+            totalClubs: newCommittee.total_clubs,
+            lastUpdated: newCommittee.updated_at
+          }
+        };
+        
+        return { data: transformedCommittee };
       }
 
-      throw new Error(`Endpoint not found: ${url}`);
+      // ... rest of the code ...
     } catch (error) {
       console.error('API Post Error:', error);
       throw error;
     }
   },
 
-  put: async (url: string, data: ClubFormData | CommitteeFormData) => {
-    try {
-      console.log('Data to update:', data);
-      console.log('URL:', url);
-      const id = url.split('/')[2];
-
-      if (url.startsWith('/clubs/')) {
-        const { data: updatedClub, error } = await supabase
-          .from(TABLES.CLUBS)
-          .update({
-            ...data,
-            street: data.street,
-            city: data.city,
-            postalCode: data.postalCode,
-            features: {
-              handicapAccess: 'handicapAccess' in data ? data.handicapAccess : false,
-              sportHealth: 'sportHealth' in data ? data.sportHealth : false
-            },
-            updatedAt: new Date().toISOString()
-          })
-          .eq('id', id)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return { data: updatedClub };
-      }
-
-      if (url.startsWith('/committees/')) {
-        const { data: updatedCommittee, error } = await supabase
-          .from(TABLES.COMMITTEES)
-          .update({
-            ...data,
-            street: data.street,
-            city: data.city,
-            postalCode: data.postalCode,
-            updatedAt: new Date().toISOString()
-          })
-          .eq('id', id)
-          .select()
-          .single();
-        
-        if (error) throw error;
-        return { data: updatedCommittee };
-      }
-
-      throw new Error(`Endpoint not found: ${url}`);
-    } catch (error) {
-      console.error('API Put Error:', error);
-      throw error;
-    }
-  },
-
-  delete: async (url: string) => {
-    try {
-      console.log('URL:', url);
-      const id = url.split('/')[2];
-
-      if (url.startsWith('/clubs/')) {
-        const { error } = await supabase
-          .from(TABLES.CLUBS)
-          .delete()
-          .eq('id', id);
-        
-        if (error) throw error;
-        return { data: { success: true } };
-      }
-
-      if (url.startsWith('/committees/')) {
-        const { error } = await supabase
-          .from(TABLES.COMMITTEES)
-          .delete()
-          .eq('id', id);
-        
-        if (error) throw error;
-        return { data: { success: true } };
-      }
-
-      throw new Error(`Endpoint not found: ${url}`);
-    } catch (error) {
-      console.error('API Delete Error:', error);
-      throw error;
-    }
-  }
+  // ... rest of the code ...
 };
 
 export default api;

@@ -7,10 +7,11 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   children: React.ReactNode;
+  isDark?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', isLoading, isDark = false, children, ...props }, ref) => {
     const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
     
     const variants = {
@@ -30,12 +31,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'h-12 px-6 text-lg',
     };
 
+    const variantKey = isDark ? `${variant}-dark` : variant;
+    const finalVariant = variants[variantKey as keyof typeof variants] || variants.primary;
+
     return (
       <button
         ref={ref}
         className={clsx(
           baseStyles,
-          variants[variant],
+          finalVariant,
           sizes[size],
           className
         )}

@@ -6,7 +6,9 @@ create table if not exists public.committees (
   rna text not null,
   email text not null,
   phone text not null,
-  address jsonb not null default '{}'::jsonb,
+  street text not null,
+  city text not null,
+  postal_code text not null,
   stats jsonb not null default '{}'::jsonb,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
@@ -45,4 +47,3 @@ create trigger handle_committees_updated_at
   before update on public.committees
   for each row
   execute function public.handle_updated_at();
-ALTER TABLE committees ADD COLUMN address JSONB;

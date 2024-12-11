@@ -64,17 +64,10 @@ export const ClubForm = ({
           {...register('committeeId')}
           error={errors.committeeId?.message}
           isDark={isDark}
-          className={`${isDark ? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-900'}`}
         >
-          <option value="" className={isDark ? 'bg-gray-800' : 'bg-white'}>
-            Sélectionnez un comité
-          </option>
+          <option value="">Sélectionnez un comité</option>
           {committees.map((committee) => (
-            <option 
-              key={committee.id} 
-              value={committee.id}
-              className={isDark ? 'bg-gray-800' : 'bg-white'}
-            >
+            <option key={committee.id} value={committee.id}>
               {committee.name}
             </option>
           ))}
@@ -135,21 +128,17 @@ export const ClubForm = ({
         <div className={`flex items-center gap-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
           <Checkbox
             {...register('handicapAccess')}
+            label="Ce club dispose d'installations pour les personnes en situation de handicap"
             isDark={isDark}
           />
-          <label className="text-sm">
-            Ce club dispose d'installations pour les personnes en situation de handicap
-          </label>
         </div>
 
         <div className={`flex items-center gap-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
           <Checkbox
             {...register('sportHealth')}
+            label="Ce club propose des programmes sport-santé"
             isDark={isDark}
           />
-          <label className="text-sm">
-            Ce club propose des programmes sport-santé
-          </label>
         </div>
       </div>
 

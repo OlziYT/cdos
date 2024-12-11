@@ -98,7 +98,7 @@ export const CommitteeForm = ({
         <Button
           type="submit"
           isLoading={isLoading}
-          isDark={isDark}
+          dark={isDark}
         >
           {initialData ? 'Mettre à jour' : 'Créer le comité'}
         </Button>

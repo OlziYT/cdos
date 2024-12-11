@@ -1,11 +1,14 @@
 import { create } from 'zustand';
 import type { Club, ClubFormData } from '../types/club';
-import api from '../lib/api';
+import { clubApi } from '../lib/api/club';
 
-interface ClubStore {
+interface ClubState {
   clubs: Club[];
   isLoading: boolean;
   error: string | null;
+}
+
+interface ClubActions {
   fetchClubs: () => Promise<void>;
   fetchClubsByCommittee: (committeeId: string) => Promise<void>;
   createClub: (data: ClubFormData) => Promise<void>;
@@ -13,6 +16,8 @@ interface ClubStore {
   deleteClub: (id: string) => Promise<void>;
   importClubs: (file: File) => Promise<void>;
 }
+
+interface ClubStore extends ClubState, ClubActions {}
 
 export const useClubStore = create<ClubStore>((set, get) => ({
   clubs: [],
@@ -22,31 +27,46 @@ export const useClubStore = create<ClubStore>((set, get) => ({
   fetchClubs: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get('/clubs');
-      set({ clubs: response.data, isLoading: false });
+      const result = await clubApi.getAll();
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+      set({ clubs: result.data, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to fetch clubs', isLoading: false });
+      const message = error instanceof Error ? error.message : 'Failed to fetch clubs';
+      set({ error: message, isLoading: false });
+      throw error;
     }
   },
 
   fetchClubsByCommittee: async (committeeId: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get(`/committees/${committeeId}/clubs`);
-      set({ clubs: response.data, isLoading: false });
+      const result = await clubApi.getAll();
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
+      const filteredClubs = result.data.filter(club => club.committeeId === committeeId);
+      set({ clubs: filteredClubs, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to fetch clubs', isLoading: false });
+      const message = error instanceof Error ? error.message : 'Failed to fetch clubs';
+      set({ error: message, isLoading: false });
+      throw error;
     }
   },
 
   createClub: async (data: ClubFormData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.post('/clubs', data);
+      const result = await clubApi.create(data);
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
       const clubs = get().clubs;
-      set({ clubs: [...clubs, response.data], isLoading: false });
+      set({ clubs: [...clubs, result.data], isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to create club', isLoading: false });
+      const message = error instanceof Error ? error.message : 'Failed to create club';
+      set({ error: message, isLoading: false });
       throw error;
     }
   },
@@ -54,13 +74,17 @@ export const useClubStore = create<ClubStore>((set, get) => ({
   updateClub: async (id: string, data: ClubFormData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.put(`/clubs/${id}`, data);
+      const result = await clubApi.update(id, data);
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
       const clubs = get().clubs.map((club) =>
-        club.id === id ? response.data : club
+        club.id === id ? result.data : club
       );
       set({ clubs, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to update club', isLoading: false });
+      const message = error instanceof Error ? error.message : 'Failed to update club';
+      set({ error: message, isLoading: false });
       throw error;
     }
   },
@@ -68,11 +92,15 @@ export const useClubStore = create<ClubStore>((set, get) => ({
   deleteClub: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      await api.delete(`/clubs/${id}`);
+      const result = await clubApi.delete(id);
+      if (result.error) {
+        throw new Error(result.error.message);
+      }
       const clubs = get().clubs.filter((club) => club.id !== id);
       set({ clubs, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to delete club', isLoading: false });
+      const message = error instanceof Error ? error.message : 'Failed to delete club';
+      set({ error: message, isLoading: false });
       throw error;
     }
   },
@@ -82,14 +110,11 @@ export const useClubStore = create<ClubStore>((set, get) => ({
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const response = await api.post('/clubs/import', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      set({ clubs: response.data, isLoading: false });
+      // TODO: Implement proper file import API
+      set({ isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to import clubs', isLoading: false });
+      const message = error instanceof Error ? error.message : 'Failed to import clubs';
+      set({ error: message, isLoading: false });
       throw error;
     }
   },

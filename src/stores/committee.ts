@@ -23,7 +23,9 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
       const response = await api.get('/committees');
       set({ committees: response.data, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to fetch committees', isLoading: false });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch committees';
+      set({ error: errorMessage, isLoading: false });
+      throw error;
     }
   },
 
@@ -31,13 +33,17 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.post('/committees', data);
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
       const committees = get().committees;
       set({ 
         committees: [...committees, response.data],
         isLoading: false 
       });
     } catch (error) {
-      set({ error: 'Failed to create committee', isLoading: false });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create committee';
+      set({ error: errorMessage, isLoading: false });
       throw error;
     }
   },
@@ -46,12 +52,16 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.put(`/committees/${id}`, data);
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
       const committees = get().committees.map((committee) =>
         committee.id === id ? response.data : committee
       );
       set({ committees, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to update committee', isLoading: false });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update committee';
+      set({ error: errorMessage, isLoading: false });
       throw error;
     }
   },
@@ -65,7 +75,8 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
       );
       set({ committees, isLoading: false });
     } catch (error) {
-      set({ error: 'Failed to delete committee', isLoading: false });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete committee';
+      set({ error: errorMessage, isLoading: false });
       throw error;
     }
   },
