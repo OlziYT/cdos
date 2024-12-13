@@ -1,51 +1,42 @@
-import React from 'react';
-import { clsx } from 'clsx';
-import { Loader2 } from 'lucide-react';
+import { clsx } from "clsx";
+import { Loader2 } from "lucide-react";
+import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'primary-dark' | 'secondary' | 'secondary-dark' | 'outline' | 'outline-dark' | 'ghost' | 'ghost-dark';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
-  children: React.ReactNode;
+  variant?: "primary" | "secondary" | "danger";
+  size?: "sm" | "md" | "lg";
   isDark?: boolean;
+  isLoading?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', isLoading, isDark = false, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
-    
-    const variants = {
-      primary: 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md focus-visible:ring-blue-600 focus-visible:ring-offset-white',
-      'primary-dark': 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md focus-visible:ring-blue-400 focus-visible:ring-offset-gray-900',
-      secondary: 'bg-white text-gray-900 hover:bg-gray-50 hover:shadow-md focus-visible:ring-gray-500 focus-visible:ring-offset-white',
-      'secondary-dark': 'bg-gray-700 text-white hover:bg-gray-600 hover:shadow-md focus-visible:ring-gray-400 focus-visible:ring-offset-gray-900',
-      outline: 'border border-gray-300 bg-transparent text-gray-900 hover:bg-gray-50 hover:shadow-sm focus-visible:ring-gray-500 focus-visible:ring-offset-white',
-      'outline-dark': 'border border-gray-600 bg-transparent text-gray-300 hover:bg-gray-700 hover:shadow-sm focus-visible:ring-gray-400 focus-visible:ring-offset-gray-900',
-      ghost: 'bg-transparent text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-500 focus-visible:ring-offset-white',
-      'ghost-dark': 'bg-transparent text-gray-300 hover:bg-gray-800 focus-visible:ring-gray-400 focus-visible:ring-offset-gray-900',
-    };
-
-    const sizes = {
-      sm: 'h-8 px-3 text-sm',
-      md: 'h-10 px-4',
-      lg: 'h-12 px-6 text-lg',
-    };
-
-    const variantKey = isDark ? `${variant}-dark` : variant;
-    const finalVariant = variants[variantKey as keyof typeof variants] || variants.primary;
+  (
+    {
+      className,
+      variant = "primary",
+      size = "md",
+      isDark = false,
+      isLoading = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const baseClasses = clsx(
+      "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 w-full sm:w-auto",
+      isDark
+        ? "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md focus-visible:ring-blue-400 focus-visible:ring-offset-gray-900"
+        : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md focus-visible:ring-blue-600 focus-visible:ring-offset-white",
+      {
+        "h-12 px-6 text-lg": size === "lg",
+        "h-10 px-4": size === "md",
+        "h-8 px-3 text-sm": size === "sm",
+      },
+      className
+    );
 
     return (
-      <button
-        ref={ref}
-        className={clsx(
-          baseStyles,
-          finalVariant,
-          sizes[size],
-          className
-        )}
-        disabled={isLoading}
-        {...props}
-      >
+      <button ref={ref} className={baseClasses} disabled={isLoading} {...props}>
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {children}
       </button>
@@ -53,4 +44,4 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";

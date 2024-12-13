@@ -1,0 +1,45 @@
+.address-search {
+  position: relative;
+  width: 100%;
+}
+
+.address-input {
+  width: 100%;
+  padding: 8px;
+  background-color: #2d3748;
+  border: 1px solid #4a5568;
+  border-radius: 4px;
+  color: white;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2d3748;
+  border: 1px solid #4a5568;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  color: white;
+}
+
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #4a5568;
+}
+
+.suggestion-item:hover {
+  background: #4a5568;
+}
+
+.loading {
+  padding: 8px;
+  text-align: center;
+  color: #a0aec0;
+  background: #2d3748;
+}

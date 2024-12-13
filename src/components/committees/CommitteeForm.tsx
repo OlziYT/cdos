@@ -1,11 +1,10 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useThemeStore } from '../../stores/theme';
+import type { CommitteeFormData } from '../../types/committee';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
-import type { CommitteeFormData } from '../../types/committee';
-import { useThemeStore } from '../../stores/theme';
 
 const committeeSchema = z.object({
   name: z.string().min(3, 'Le nom doit contenir au moins 3 caractères'),
@@ -98,7 +97,7 @@ export const CommitteeForm = ({
         <Button
           type="submit"
           isLoading={isLoading}
-          dark={isDark}
+          isDark={true}
         >
           {initialData ? 'Mettre à jour' : 'Créer le comité'}
         </Button>

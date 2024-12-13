@@ -1,37 +1,19 @@
 export interface Club {
   id: string;
   name: string;
-  committeeId: string;
+  committee_id: string;
   siret: string;
   rna: string;
   email: string;
   phone: string;
-  imageUrl?: string;
-  address: {
-    street: string;
-    city: string;
-    postalCode: string;
-    location: {
-      lat: number;
-      lng: number;
-    };
-  };
+  street: string;
+  city: string;
+  postal_code: string;
+  location?: any;
   tags: string[];
-  stats: {
-    totalMembers: number;
-    lastUpdated: string;
-  };
-  features: {
-    handicapAccess: boolean;
-    sportHealth: boolean;
-  };
-  pricing?: {
-    range: string;
-    details: string;
-  };
-  ageGroups?: string[];
-  createdAt: string;
-  updatedAt: string;
+  handicap_access: boolean;
+  sport_health: boolean;
+  total_members?: number;
 }
 
 export interface ClubFormData {

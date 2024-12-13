@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
-import { Users, Building2, BarChart3, Settings, Menu, X } from 'lucide-react';
-import { Button } from '../ui/Button';
-import { Header } from './Header';
-import { useThemeStore } from '../../stores/theme';
+import { BarChart3, Building2, Menu, Settings, Users, X } from "lucide-react";
+import { useState } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { useThemeStore } from "../../stores/theme";
+import { Button } from "../ui/Button";
+import { Header } from "./Header";
 
 const navigation = [
-  { name: 'Comités', href: '/dashboard/committees', icon: Building2 },
-  { name: 'Clubs', href: '/dashboard/clubs', icon: Users },
-  { name: 'Statistiques', href: '/dashboard/statistics', icon: BarChart3 },
-  { name: 'Paramètres', href: '/dashboard/settings', icon: Settings },
+  { name: "Comités", href: "/dashboard/committees", icon: Building2 },
+  { name: "Clubs", href: "/dashboard/clubs", icon: Users },
+  { name: "Statistiques", href: "/dashboard/statistics", icon: BarChart3 },
+  { name: "Paramètres", href: "/dashboard/settings", icon: Settings },
 ];
 
 export const DashboardLayout = () => {
@@ -18,9 +18,11 @@ export const DashboardLayout = () => {
   const { isDark } = useThemeStore();
 
   return (
-    <div className={`min-h-screen ${isDark ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+    <div
+      className={`min-h-screen ${isDark ? "dark bg-gray-900" : "bg-gray-50"}`}
+    >
       <Header />
-      
+
       <div className="flex min-h-[calc(100vh-4rem)]">
         {/* Mobile menu button */}
         <div className="lg:hidden fixed top-20 left-4 z-50">
@@ -28,7 +30,9 @@ export const DashboardLayout = () => {
             variant="ghost"
             size="sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`rounded-full p-2 ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm`}
+            className={`rounded-full p-2 ${
+              isDark ? "bg-gray-800" : "bg-white"
+            } shadow-sm`}
           >
             {isMobileMenuOpen ? (
               <X className="h-5 w-5" />
@@ -42,9 +46,13 @@ export const DashboardLayout = () => {
         <div
           className={`
             fixed top-16 left-0 z-40 w-64 h-[calc(100vh-4rem)] transform transition-transform duration-200 ease-in-out
-            ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}
+            ${
+              isDark
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
+            }
             lg:sticky lg:top-16 lg:translate-x-0 lg:border-r
-            ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+            ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
           `}
         >
           <nav className="flex flex-col h-full">
@@ -52,7 +60,7 @@ export const DashboardLayout = () => {
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname.startsWith(item.href);
-                
+
                 return (
                   <Link
                     key={item.name}
@@ -60,22 +68,28 @@ export const DashboardLayout = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`
                       flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors
-                      ${isActive
-                        ? isDark 
-                          ? 'bg-blue-900/50 text-blue-400'
-                          : 'bg-blue-50 text-blue-700'
-                        : isDark
-                          ? 'text-gray-300 hover:bg-gray-700'
-                          : 'text-gray-700 hover:bg-gray-50'
+                      ${
+                        isActive
+                          ? isDark
+                            ? "bg-blue-900/50 text-blue-400"
+                            : "bg-blue-50 text-blue-700"
+                          : isDark
+                          ? "text-gray-300 hover:bg-gray-700"
+                          : "text-gray-700 hover:bg-gray-50"
                       }
                     `}
                   >
                     <Icon
                       className={`
                         mr-3 h-5 w-5
-                        ${isActive 
-                          ? isDark ? 'text-blue-400' : 'text-blue-700'
-                          : isDark ? 'text-gray-400' : 'text-gray-400'
+                        ${
+                          isActive
+                            ? isDark
+                              ? "text-blue-400"
+                              : "text-blue-700"
+                            : isDark
+                            ? "text-gray-400"
+                            : "text-gray-400"
                         }
                       `}
                     />

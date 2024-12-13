@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Trophy, Menu } from 'lucide-react';
-import { MobileMenu } from './MobileMenu';
+import { Menu, Trophy } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { MobileMenu } from "./MobileMenu";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -16,7 +16,7 @@ export const Header = () => {
               <span className="text-xl font-bold text-white">CDOS Tarn</span>
             </Link>
           </div>
-          
+
           <button
             className="relative group p-2 rounded-lg hover:bg-white/10 transition-colors"
             onClick={() => setIsMobileMenuOpen(true)}
