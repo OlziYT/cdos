@@ -90,3 +90,18 @@ export const updateClub = async (
     throw error;
   }
 };
+
+export const deleteClub = async (id: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from("clubs")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error("Erreur lors de la suppression du club:", error);
+    throw error;
+  }
+};
