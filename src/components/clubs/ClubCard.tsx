@@ -75,26 +75,34 @@ export const ClubCard = ({
           ))}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col xs:flex-row gap-1.5 w-full">
           <Button
             variant={isDark ? "outline-dark" : "outline"}
             size="sm"
-            className="flex-1 sm:flex-initial rounded-full hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            className={`w-full xs:w-auto text-xs sm:text-sm rounded-full transition-colors flex items-center justify-center gap-1.5 py-1.5 px-2.5 ${
+              isDark
+                ? 'hover:bg-blue-900/20 hover:text-blue-400'
+                : 'hover:bg-blue-50 hover:text-blue-600'
+            }`}
             onClick={onShowOnMap}
           >
-            <Target className="h-4 w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Voir sur la carte</span>
+            <Target className="h-3.5 w-3.5 flex-shrink-0" />
+            <span className="whitespace-nowrap">Voir sur la carte</span>
           </Button>
           <Button
             variant={isDark ? "outline-dark" : "outline"}
             size="sm"
-            className="flex-1 sm:flex-initial rounded-full bg-blue-600 hover:bg-blue-700 transition-colors"
+            className={`w-full xs:w-auto text-xs sm:text-sm rounded-full transition-colors flex items-center justify-center gap-1.5 py-1.5 px-2.5 ${
+              isDark
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-blue-600 hover:bg-blue-700'
+            }`}
             onClick={() => {
               /* TODO: Implement modal with details */
             }}
           >
-            <Info className="h-4 w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Plus d'infos</span>
+            <Info className="h-3.5 w-3.5 flex-shrink-0" />
+            <span className="whitespace-nowrap">Plus d'infos</span>
           </Button>
         </div>
       </div>

@@ -25,7 +25,7 @@ export const SearchPage = () => {
     search: "",
     committee: "",
     ageRange: "",
-    priceRange: "",
+    sports: [],
     features: {
       handicapAccess: false,
       sportHealth: false,
@@ -47,11 +47,14 @@ export const SearchPage = () => {
       .includes(filters.search.toLowerCase());
     const matchesCommittee =
       !filters.committee || club.committee_id === filters.committee;
+    const matchesSports =
+      filters.sports.length === 0 ||
+      (club.sports && club.sports.some((sport) => filters.sports.includes(sport)));
     const matchesFeatures =
       (!filters.features.handicapAccess || club.handicap_access) &&
       (!filters.features.sportHealth || club.sport_health);
 
-    return matchesSearch && matchesCommittee && matchesFeatures;
+    return matchesSearch && matchesCommittee && matchesSports && matchesFeatures;
   });
 
   const handleShowOnMap = (club: Club) => {
