@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { createClub, fetchClubs } from "../services/club";
+import { createClub, fetchClubs, updateClub } from "../services/club";
 import type { Club, ClubFormData } from "../types/club";
 
 interface ClubStore {
@@ -8,6 +8,7 @@ interface ClubStore {
   error: Error | null;
   fetchClubs: () => Promise<void>;
   createClub: (data: ClubFormData) => Promise<void>;
+  updateClub: (id: string, data: ClubFormData) => Promise<void>;
 }
 
 export const useClubStore = create<ClubStore>((set) => ({
@@ -30,6 +31,20 @@ export const useClubStore = create<ClubStore>((set) => ({
     try {
       const newClub = await createClub(data);
       if (newClub) {
+        const clubs = await fetchClubs();
+        set({ clubs, isLoading: false });
+      }
+    } catch (error) {
+      set({ error: error as Error, isLoading: false });
+      throw error;
+    }
+  },
+
+  updateClub: async (id: string, data: ClubFormData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const updatedClub = await updateClub(id, data);
+      if (updatedClub) {
         const clubs = await fetchClubs();
         set({ clubs, isLoading: false });
       }

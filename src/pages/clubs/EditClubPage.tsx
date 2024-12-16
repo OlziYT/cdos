@@ -8,32 +8,36 @@ import type { ClubFormData } from '../../types/club';
 export const EditClubPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { clubs, updateClub, isLoading } = useClubStore();
+  const { clubs, updateClub, fetchClubs, isLoading } = useClubStore();
   const { isDark } = useThemeStore();
 
   const club = clubs.find((c) => c.id === id);
 
   useEffect(() => {
-    if (!club) {
+    fetchClubs();
+  }, [fetchClubs]);
+
+  useEffect(() => {
+    if (clubs.length > 0 && !club) {
       navigate('/dashboard/clubs');
     }
-  }, [club, navigate]);
+  }, [club, clubs, navigate]);
 
   if (!club) return null;
 
   const initialData: ClubFormData = {
     name: club.name,
-    committeeId: club.committeeId,
+    committeeId: club.committee_id,
     siret: club.siret,
     rna: club.rna,
     email: club.email,
     phone: club.phone,
-    street: club.address.street,
-    city: club.address.city,
-    postalCode: club.address.postalCode,
+    street: club.street,
+    city: club.city,
+    postalCode: club.postal_code,
     tags: club.tags,
-    handicapAccess: club.features.handicapAccess,
-    sportHealth: club.features.sportHealth,
+    handicapAccess: club.handicap_access,
+    sportHealth: club.sport_health,
   };
 
   const handleSubmit = async (data: ClubFormData) => {
