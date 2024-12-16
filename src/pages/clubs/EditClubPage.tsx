@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useClubStore } from '../../stores/club';
 import { useThemeStore } from '../../stores/theme';
+import { useCommitteeStore } from '../../stores/committee';
 import { ClubForm } from '../../components/clubs/ClubForm';
 import type { ClubFormData } from '../../types/club';
 
@@ -10,12 +11,14 @@ export const EditClubPage = () => {
   const navigate = useNavigate();
   const { clubs, updateClub, fetchClubs, isLoading } = useClubStore();
   const { isDark } = useThemeStore();
+  const { fetchCommittees } = useCommitteeStore();
 
   const club = clubs.find((c) => c.id === id);
 
   useEffect(() => {
     fetchClubs();
-  }, [fetchClubs]);
+    fetchCommittees();
+  }, [fetchClubs, fetchCommittees]);
 
   useEffect(() => {
     if (clubs.length > 0 && !club) {
@@ -42,6 +45,7 @@ export const EditClubPage = () => {
 
   const handleSubmit = async (data: ClubFormData) => {
     try {
+      console.log('Données soumises:', data);
       await updateClub(id!, data);
       navigate('/dashboard/clubs');
     } catch (error) {

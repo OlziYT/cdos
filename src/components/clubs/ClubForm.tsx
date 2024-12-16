@@ -32,9 +32,10 @@ const clubSchema = z.object({
 interface ClubFormProps {
   onSubmit: (data: ClubFormData) => Promise<void>;
   isLoading: boolean;
+  initialData?: ClubFormData;
 }
 
-export const ClubForm = ({ onSubmit, isLoading }: ClubFormProps) => {
+export const ClubForm = ({ onSubmit, isLoading, initialData }: ClubFormProps) => {
   const { committees } = useCommitteeStore();
   const { isDark } = useThemeStore();
 
@@ -46,6 +47,7 @@ export const ClubForm = ({ onSubmit, isLoading }: ClubFormProps) => {
     formState: { errors },
   } = useForm<ClubFormData>({
     resolver: zodResolver(clubSchema),
+    defaultValues: initialData,
   });
 
   const handleAddressSelect = (address: {
@@ -177,7 +179,7 @@ export const ClubForm = ({ onSubmit, isLoading }: ClubFormProps) => {
 
       <div className="flex justify-end gap-3">
         <Button type="submit" isLoading={isLoading} isDark={isDark}>
-          Créer le club
+          {initialData ? "Modifier le club" : "Créer le club"}
         </Button>
       </div>
     </form>
