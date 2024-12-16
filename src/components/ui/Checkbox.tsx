@@ -1,5 +1,6 @@
 import React from 'react';
 import { clsx } from 'clsx';
+import { Check } from 'lucide-react';
 
 interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -7,25 +8,54 @@ interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ className, label, isDark = false, ...props }, ref) => {
+  ({ className, label, isDark = false, checked, ...props }, ref) => {
     return (
-      <label className="flex items-center">
-        <input
-          type="checkbox"
-          ref={ref}
+      <label className="flex items-center group cursor-pointer">
+        <div className="relative">
+          <input
+            type="checkbox"
+            ref={ref}
+            checked={checked}
+            className="sr-only"
+            {...props}
+          />
+          <div
+            className={clsx(
+              'h-5 w-5 rounded transition-all duration-200 border-2 flex items-center justify-center',
+              checked
+                ? isDark
+                  ? 'bg-blue-500 border-blue-500'
+                  : 'bg-blue-600 border-blue-600'
+                : isDark
+                ? 'border-gray-600 group-hover:border-gray-500'
+                : 'border-gray-300 group-hover:border-gray-400',
+            )}
+          >
+            {checked && (
+              <Check 
+                className="h-3 w-3 text-white" 
+                strokeWidth={3}
+              />
+            )}
+          </div>
+        </div>
+        <span 
           className={clsx(
-            'h-4 w-4 rounded focus:ring-2',
+            'ml-3 text-sm transition-colors duration-200',
             isDark 
-              ? 'border-gray-600 bg-gray-700 text-blue-400 focus:ring-blue-400 focus:ring-offset-gray-900'
-              : 'border-gray-300 bg-white text-blue-600 focus:ring-blue-500 focus:ring-offset-white',
-            className
+              ? checked
+                ? 'text-gray-200'
+                : 'text-gray-400 group-hover:text-gray-300'
+              : checked
+                ? 'text-gray-900'
+                : 'text-gray-600 group-hover:text-gray-800'
           )}
-          {...props}
-        />
-        <span className={`ml-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+        >
           {label}
         </span>
       </label>
     );
   }
 );
+
+Checkbox.displayName = 'Checkbox';

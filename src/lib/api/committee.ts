@@ -66,7 +66,5 @@ export const committeeApi = {
       .eq('id', id);
     
     if (error) throw error;
-    
-    return { data: true };
   }
 };

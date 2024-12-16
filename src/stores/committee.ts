@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { Committee, CommitteeFormData } from '../types/committee';
-import { fetchCommittees as fetchCommitteesService, createCommittee as createCommitteeService, updateCommittee as updateCommitteeService, deleteCommittee as deleteCommitteeService } from '../services/committee';
+import api from '../lib/api';
 
 interface CommitteeStore {
   committees: Committee[];
@@ -20,8 +20,8 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
   fetchCommittees: async () => {
     set({ isLoading: true, error: null });
     try {
-      const data = await fetchCommitteesService();
-      set({ committees: data, isLoading: false });
+      const response = await api.get('/committees');
+      set({ committees: response.data, isLoading: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to fetch committees';
       set({ error: errorMessage, isLoading: false });
@@ -32,10 +32,13 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
   createCommittee: async (data: CommitteeFormData) => {
     set({ isLoading: true, error: null });
     try {
-      const newCommittee = await createCommitteeService(data);
+      const response = await api.post('/committees', data);
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
       const committees = get().committees;
       set({ 
-        committees: [...committees, newCommittee],
+        committees: [...committees, response.data],
         isLoading: false 
       });
     } catch (error) {
@@ -48,9 +51,12 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
   updateCommittee: async (id: string, data: CommitteeFormData) => {
     set({ isLoading: true, error: null });
     try {
-      await updateCommitteeService(id, data);
+      const response = await api.put(`/committees/${id}`, data);
+      if (!response.data) {
+        throw new Error('No data received from server');
+      }
       const committees = get().committees.map((committee) =>
-        committee.id === id ? { ...committee, ...data } : committee
+        committee.id === id ? response.data : committee
       );
       set({ committees, isLoading: false });
     } catch (error) {
@@ -63,7 +69,7 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
   deleteCommittee: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      await deleteCommitteeService(id);
+      await api.delete(`/committees/${id}`);
       const committees = get().committees.filter(
         (committee) => committee.id !== id
       );

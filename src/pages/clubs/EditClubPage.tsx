@@ -2,50 +2,42 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useClubStore } from '../../stores/club';
 import { useThemeStore } from '../../stores/theme';
-import { useCommitteeStore } from '../../stores/committee';
 import { ClubForm } from '../../components/clubs/ClubForm';
 import type { ClubFormData } from '../../types/club';
 
 export const EditClubPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { clubs, updateClub, fetchClubs, isLoading } = useClubStore();
+  const { clubs, updateClub, isLoading } = useClubStore();
   const { isDark } = useThemeStore();
-  const { fetchCommittees } = useCommitteeStore();
 
   const club = clubs.find((c) => c.id === id);
 
   useEffect(() => {
-    fetchClubs();
-    fetchCommittees();
-  }, [fetchClubs, fetchCommittees]);
-
-  useEffect(() => {
-    if (clubs.length > 0 && !club) {
+    if (!club) {
       navigate('/dashboard/clubs');
     }
-  }, [club, clubs, navigate]);
+  }, [club, navigate]);
 
   if (!club) return null;
 
   const initialData: ClubFormData = {
     name: club.name,
-    committeeId: club.committee_id,
+    committeeId: club.committeeId,
     siret: club.siret,
     rna: club.rna,
     email: club.email,
     phone: club.phone,
-    street: club.street,
-    city: club.city,
-    postalCode: club.postal_code,
+    street: club.address.street,
+    city: club.address.city,
+    postalCode: club.address.postalCode,
     tags: club.tags,
-    handicapAccess: club.handicap_access,
-    sportHealth: club.sport_health,
+    handicapAccess: club.features.handicapAccess,
+    sportHealth: club.features.sportHealth,
   };
 
   const handleSubmit = async (data: ClubFormData) => {
     try {
-      console.log('Données soumises:', data);
       await updateClub(id!, data);
       navigate('/dashboard/clubs');
     } catch (error) {

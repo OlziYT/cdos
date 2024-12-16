@@ -1,0 +1,44 @@
+/* Styles pour la barre de défilement */
+.sports-list {
+  max-height: 12rem;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.sports-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sports-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Style clair */
+.light .sports-list::-webkit-scrollbar-thumb {
+  background-color: #D1D5DB;
+  border-radius: 4px;
+}
+
+.light .sports-list::-webkit-scrollbar-thumb:hover {
+  background-color: #9CA3AF;
+}
+
+/* Style sombre */
+.dark .sports-list::-webkit-scrollbar-thumb {
+  background-color: #4B5563;
+  border-radius: 4px;
+}
+
+.dark .sports-list::-webkit-scrollbar-thumb:hover {
+  background-color: #6B7280;
+}
+
+/* Firefox */
+.sports-list {
+  scrollbar-width: thin;
+  scrollbar-color: #D1D5DB transparent;
+}
+
+.dark .sports-list {
+  scrollbar-color: #4B5563 transparent;
+}
