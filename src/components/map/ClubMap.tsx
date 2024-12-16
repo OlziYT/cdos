@@ -2,6 +2,7 @@ import "leaflet/dist/leaflet.css";
 import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import type { Club } from "../../types/club";
+import { Navigation } from "lucide-react";
 
 interface ClubMapProps {
   clubs: Club[];
@@ -20,6 +21,12 @@ export const ClubMap = React.forwardRef<any, ClubMapProps>(
     },
     ref
   ) => {
+    const handleGetDirections = (club: Club) => {
+      if (!club.location?.coordinates) return;
+      const destination = `${club.location.coordinates[1]},${club.location.coordinates[0]}`;
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}`, '_blank');
+    };
+
     return (
       <MapContainer
         center={center}
@@ -91,6 +98,17 @@ export const ClubMap = React.forwardRef<any, ClubMapProps>(
                       </span>
                     )}
                   </div>
+                  <button
+                    onClick={() => handleGetDirections(club)}
+                    className={`mt-3 flex items-center gap-2 w-full justify-center rounded-md px-3 py-2 text-sm font-medium ${
+                      isDark
+                        ? "bg-blue-900 text-blue-200 hover:bg-blue-800"
+                        : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                    }`}
+                  >
+                    <Navigation className="h-4 w-4" />
+                    Itinéraire
+                  </button>
                 </div>
               </Popup>
             </Marker>
