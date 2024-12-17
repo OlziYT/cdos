@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
+import { useEffect } from "react";
 import { z } from "zod";
 import { useCommitteeStore } from "../../stores/committee";
 import { useThemeStore } from "../../stores/theme";
@@ -32,11 +33,17 @@ const clubSchema = z.object({
 interface ClubFormProps {
   onSubmit: (data: ClubFormData) => Promise<void>;
   isLoading: boolean;
+  initialData?: ClubFormData;
+  submitText?: string;
 }
 
-export const ClubForm = ({ onSubmit, isLoading }: ClubFormProps) => {
-  const { committees } = useCommitteeStore();
+export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Créer le club" }: ClubFormProps) => {
+  const { committees, fetchCommittees } = useCommitteeStore();
   const { isDark } = useThemeStore();
+
+  useEffect(() => {
+    fetchCommittees();
+  }, [fetchCommittees]);
 
   const {
     register,
@@ -46,6 +53,7 @@ export const ClubForm = ({ onSubmit, isLoading }: ClubFormProps) => {
     formState: { errors },
   } = useForm<ClubFormData>({
     resolver: zodResolver(clubSchema),
+    defaultValues: initialData,
   });
 
   const handleAddressSelect = (address: {
@@ -176,8 +184,13 @@ export const ClubForm = ({ onSubmit, isLoading }: ClubFormProps) => {
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button type="submit" isLoading={isLoading} isDark={isDark}>
-          Créer le club
+        <Button
+          type="submit"
+          disabled={isLoading}
+          isLoading={isLoading}
+          className="w-full sm:w-auto"
+        >
+          {submitText}
         </Button>
       </div>
     </form>
