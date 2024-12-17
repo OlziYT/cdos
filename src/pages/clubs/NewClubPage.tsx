@@ -1,25 +1,38 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ClubForm } from "../../components/clubs/ClubForm";
 import { useClubStore } from "../../stores/club";
 import { useCommitteeStore } from "../../stores/committee";
 import { useThemeStore } from "../../stores/theme";
+import { ClubFormData } from "../../types/club";
 
 export const NewClubPage = () => {
   const { createClub } = useClubStore();
   const { fetchCommittees } = useCommitteeStore();
   const { isDark } = useThemeStore();
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCommittees();
   }, [fetchCommittees]);
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = async (data: ClubFormData, image: File | null) => {
     try {
-      await createClub(data);
-      navigate("/dashboard/clubs");
+      setError(null);
+      console.log("Tentative de création du club avec les données:", data);
+      const result = await createClub(data, image);
+      
+      if (result) {
+        console.log("Club créé avec succès, redirection...");
+        navigate("/dashboard/clubs");
+        return;
+      }
+      
+      setError("La création du club a échoué. Veuillez réessayer.");
+      console.error("Erreur: Le club n'a pas été créé");
     } catch (error) {
+      setError("Une erreur est survenue lors de la création du club.");
       console.error("Erreur lors de la création du club:", error);
     }
   };
@@ -44,6 +57,14 @@ export const NewClubPage = () => {
           </p>
         </div>
       </div>
+
+      {error && (
+        <div className={`mb-4 p-4 rounded-lg ${
+          isDark ? "bg-red-900/50 text-red-200" : "bg-red-50 text-red-800"
+        }`}>
+          {error}
+        </div>
+      )}
 
       <div
         className={`${isDark ? "bg-gray-800" : "bg-white"} shadow-sm ring-1 ${

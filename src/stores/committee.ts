@@ -1,18 +1,17 @@
-import { create } from 'zustand';
-import type { Committee, CommitteeFormData } from '../types/committee';
-import api from '../lib/api';
+import { create } from "zustand";
+import { createCommittee, fetchCommittees, deleteCommittee } from "../services/committee";
+import type { Committee, CommitteeFormData } from "../types/committee";
 
 interface CommitteeStore {
   committees: Committee[];
   isLoading: boolean;
-  error: string | null;
+  error: Error | null;
   fetchCommittees: () => Promise<void>;
   createCommittee: (data: CommitteeFormData) => Promise<void>;
-  updateCommittee: (id: string, data: CommitteeFormData) => Promise<void>;
   deleteCommittee: (id: string) => Promise<void>;
 }
 
-export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
+export const useCommitteeStore = create<CommitteeStore>((set) => ({
   committees: [],
   isLoading: false,
   error: null,
@@ -20,48 +19,23 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
   fetchCommittees: async () => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.get('/committees');
-      set({ committees: response.data, isLoading: false });
+      const committees = await fetchCommittees();
+      set({ committees, isLoading: false });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch committees';
-      set({ error: errorMessage, isLoading: false });
-      throw error;
+      set({ error: error as Error, isLoading: false });
     }
   },
 
   createCommittee: async (data: CommitteeFormData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.post('/committees', data);
-      if (!response.data) {
-        throw new Error('No data received from server');
+      const newCommittee = await createCommittee(data);
+      if (newCommittee) {
+        const committees = await fetchCommittees();
+        set({ committees, isLoading: false });
       }
-      const committees = get().committees;
-      set({ 
-        committees: [...committees, response.data],
-        isLoading: false 
-      });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create committee';
-      set({ error: errorMessage, isLoading: false });
-      throw error;
-    }
-  },
-
-  updateCommittee: async (id: string, data: CommitteeFormData) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await api.put(`/committees/${id}`, data);
-      if (!response.data) {
-        throw new Error('No data received from server');
-      }
-      const committees = get().committees.map((committee) =>
-        committee.id === id ? response.data : committee
-      );
-      set({ committees, isLoading: false });
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update committee';
-      set({ error: errorMessage, isLoading: false });
+      set({ error: error as Error, isLoading: false });
       throw error;
     }
   },
@@ -69,14 +43,11 @@ export const useCommitteeStore = create<CommitteeStore>((set, get) => ({
   deleteCommittee: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      await api.delete(`/committees/${id}`);
-      const committees = get().committees.filter(
-        (committee) => committee.id !== id
-      );
+      await deleteCommittee(id);
+      const committees = await fetchCommittees();
       set({ committees, isLoading: false });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to delete committee';
-      set({ error: errorMessage, isLoading: false });
+      set({ error: error as Error, isLoading: false });
       throw error;
     }
   },

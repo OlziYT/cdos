@@ -69,13 +69,13 @@ export const CommitteeList = ({ committees, onDelete }: CommitteeListProps) => {
                     {committee.siret}
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
-                    {committee.address.city}
+                    {committee.city}
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
-                    {committee.stats.totalMembers}
+                    {committee.total_members || 0}
                   </td>
                   <td className={`px-6 py-4 whitespace-nowrap text-sm ${isDark ? 'text-gray-300' : 'text-gray-500'}`}>
-                    {committee.stats.totalClubs}
+                    {committee.total_clubs || 0}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end gap-3">

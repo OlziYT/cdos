@@ -23,17 +23,17 @@ export const EditClubPage = () => {
 
   const initialData: ClubFormData = {
     name: club.name,
-    committeeId: club.committeeId,
+    committeeId: club.committee_id,
     siret: club.siret,
     rna: club.rna,
     email: club.email,
     phone: club.phone,
-    street: club.address.street,
-    city: club.address.city,
-    postalCode: club.address.postalCode,
+    street: club.street,
+    city: club.city,
+    postalCode: club.postal_code,
     tags: club.tags,
-    handicapAccess: club.features.handicapAccess,
-    sportHealth: club.features.sportHealth,
+    handicapAccess: club.handicap_access,
+    sportHealth: club.sport_health,
   };
 
   const handleSubmit = async (data: ClubFormData) => {
@@ -49,24 +49,20 @@ export const EditClubPage = () => {
     <div>
       <div className="md:flex md:items-center md:justify-between mb-8">
         <div>
-          <h2 className={`text-2xl font-bold leading-7 ${isDark ? 'text-white' : 'text-gray-900'} sm:truncate sm:text-3xl sm:tracking-tight`}>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
             Modifier le club
-          </h2>
-          <p className={`mt-1 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+          </h1>
+          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Mettre à jour les informations du club.
           </p>
         </div>
       </div>
-
-      <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm ring-1 ${isDark ? 'ring-gray-700' : 'ring-gray-900/5'} sm:rounded-xl md:col-span-2`}>
-        <div className="px-4 py-6 sm:p-8">
-          <ClubForm
-            initialData={initialData}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
-        </div>
-      </div>
+      <ClubForm
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+        initialData={initialData}
+        submitText="Modifier le club"
+      />
     </div>
   );
 };

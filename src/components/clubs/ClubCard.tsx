@@ -13,6 +13,8 @@ export const ClubCard = ({
   onShowOnMap,
   isDark = false,
 }: ClubCardProps) => {
+  console.log("Club data:", club);
+  console.log("Image URL:", club.image_url);
   return (
     <div
       className={`${
@@ -22,7 +24,7 @@ export const ClubCard = ({
       <div className="relative">
         <img
           src={
-            club.imageUrl ||
+            club.image_url ||
             "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
           }
           alt={club.name}
@@ -43,7 +45,7 @@ export const ClubCard = ({
             <span
               className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                 isDark
-                  ? "bg-blue-900 text-blue-200"
+                  ? "bg-blue-900/80 text-blue-100"
                   : "bg-blue-100 text-blue-800"
               }`}
             >
@@ -75,35 +77,32 @@ export const ClubCard = ({
           ))}
         </div>
 
-        <div className="flex flex-col xs:flex-row gap-1.5 w-full">
-          <Button
-            variant={isDark ? "outline-dark" : "outline"}
-            size="sm"
-            className={`w-full xs:w-auto text-xs sm:text-sm rounded-full transition-colors flex items-center justify-center gap-1.5 py-1.5 px-2.5 ${
-              isDark
-                ? 'hover:bg-blue-900/20 hover:text-blue-400'
-                : 'hover:bg-blue-50 hover:text-blue-600'
-            }`}
+        <div className="flex flex-col gap-2">
+          <button
             onClick={onShowOnMap}
-          >
-            <Target className="h-3.5 w-3.5 flex-shrink-0" />
-            <span className="whitespace-nowrap">Voir sur la carte</span>
-          </Button>
-          <Button
-            variant={isDark ? "outline-dark" : "outline"}
-            size="sm"
-            className={`w-full xs:w-auto text-xs sm:text-sm rounded-full transition-colors flex items-center justify-center gap-1.5 py-1.5 px-2.5 ${
+            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               isDark
-                ? 'bg-blue-600 hover:bg-blue-700'
-                : 'bg-blue-600 hover:bg-blue-700'
+                ? "bg-blue-900/80 text-blue-100 hover:bg-blue-800/80"
+                : "bg-blue-600 text-white hover:bg-blue-700"
             }`}
+          >
+            <MapPin className="h-4 w-4" />
+            Voir sur la carte
+          </button>
+
+          <button
             onClick={() => {
               /* TODO: Implement modal with details */
             }}
+            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isDark
+                ? "bg-blue-900/80 text-blue-100 hover:bg-blue-800/80"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
           >
-            <Info className="h-3.5 w-3.5 flex-shrink-0" />
-            <span className="whitespace-nowrap">Plus d'infos</span>
-          </Button>
+            <Info className="h-4 w-4" />
+            Plus d'infos
+          </button>
         </div>
       </div>
     </div>

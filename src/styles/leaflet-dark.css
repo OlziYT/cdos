@@ -1,0 +1,28 @@
+.leaflet-popup-content-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  min-width: 200px;
+}
+
+.leaflet-popup-tip {
+  display: none;
+}
+
+/* Thème clair */
+.light-theme .leaflet-popup-content-wrapper {
+  color: #1f2937;
+}
+
+/* Thème sombre */
+.dark-theme .leaflet-popup-content-wrapper {
+  color: #f3f4f6;
+}
+
+/* Style commun */
+.leaflet-container {
+  font-family: inherit;
+}
