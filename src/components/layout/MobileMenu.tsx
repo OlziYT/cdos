@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import { X, Home, Search, LayoutDashboard, LogIn, User, LogOut, Moon, Sun, Gift } from 'lucide-react';
+import { X, Home, Search, LayoutDashboard, LogIn, User, LogOut, Moon, Sun } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useAuthStore } from '../../stores/auth';
 import { useThemeStore } from '../../stores/theme';
-import { useChristmasThemeStore } from '../../stores/christmasTheme';
 import { UserAvatar } from './UserAvatar';
 
 interface MobileMenuProps {
@@ -14,7 +13,6 @@ interface MobileMenuProps {
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const { user, logout } = useAuthStore();
   const { isDark, toggleTheme } = useThemeStore();
-  const { isChristmasTheme, toggleChristmasTheme } = useChristmasThemeStore();
 
   return (
     <div 
@@ -93,18 +91,6 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 Mode sombre
               </>
             )}
-          </button>
-
-          <button
-            onClick={toggleChristmasTheme}
-            className={`flex w-full items-center p-3 rounded-lg transition-colors ${
-              isDark 
-                ? 'text-gray-300 hover:bg-gray-800' 
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <Gift className="h-5 w-5 mr-3" />
-            {isChristmasTheme ? 'Thème classique' : 'Thème de Noël'} {!isChristmasTheme && '🎄'}
           </button>
 
           <Link

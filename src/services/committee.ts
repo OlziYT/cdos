@@ -1,50 +1,57 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
+import type { Committee, CommitteeFormData } from "../types/committee";
 
-export interface Committee {
-  id: string;
-  name: string;
-  siret: string;
-  rna: string;
-  email: string;
-  phone: string;
-  street: string;
-  city: string;
-  postal_code: string;
-  total_members?: number;
-  total_clubs?: number;
-}
-
-export const createCommittee = async (data: Omit<Committee, 'id'>) => {
+export const fetchCommittees = async (): Promise<Committee[]> => {
   try {
-    const { data: newCommittee, error } = await supabase
-      .from('committees')
-      .insert([data])
+    const { data, error } = await supabase
+      .from("committees")
+      .select("*");
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("Erreur lors de la récupération des comités:", error);
+    return [];
+  }
+};
+
+export const createCommittee = async (
+  committeeData: CommitteeFormData
+): Promise<Committee | null> => {
+  try {
+    const { data, error } = await supabase
+      .from("committees")
+      .insert([
+        {
+          name: committeeData.name,
+          street: committeeData.street,
+          city: committeeData.city,
+          postal_code: committeeData.postalCode,
+          email: committeeData.email,
+          phone: committeeData.phone,
+        },
+      ])
       .select()
       .single();
 
-    if (error) {
-      console.error('Erreur lors de la création du comité:', error);
-      throw error;
-    }
-
-    return newCommittee;
+    if (error) throw error;
+    return data;
   } catch (error) {
-    console.error('Erreur lors de la création du comité:', error);
+    console.error("Erreur lors de la création du comité:", error);
     throw error;
   }
 };
 
-export const fetchCommittees = async () => {
+export const deleteCommittee = async (id: string): Promise<void> => {
   try {
-    const { data, error } = await supabase
-      .from('committees')
-      .select('*')
-      .order('name');
+    const { error } = await supabase
+      .from("committees")
+      .delete()
+      .eq("id", id);
 
     if (error) throw error;
-    return data ?? [];
   } catch (error) {
-    console.error('Erreur lors de la récupération des comités:', error);
-    return [];
+    console.error("Erreur lors de la suppression du comité:", error);
+    throw error;
   }
-}; 
+};

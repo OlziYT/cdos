@@ -11,7 +11,6 @@ export const fetchClubs = async (): Promise<Club[]> => {
 
     if (error) throw error;
 
-    // Transformer les données pour avoir le bon format
     const clubs =
       data?.map((club) => ({
         ...club,
@@ -54,6 +53,20 @@ export const createClub = async (
     return data;
   } catch (error) {
     console.error("Erreur lors de la création du club:", error);
+    throw error;
+  }
+};
+
+export const deleteClub = async (id: string): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from("clubs")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Erreur lors de la suppression du club:", error);
     throw error;
   }
 };
