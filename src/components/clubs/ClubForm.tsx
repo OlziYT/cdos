@@ -213,14 +213,12 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
           {...register("city")}
           error={errors.city?.message}
           isDark={isDark}
-          readOnly
         />
         <Input
           label="Code postal"
           {...register("postalCode")}
           error={errors.postalCode?.message}
           isDark={isDark}
-          readOnly
         />
         <div className="col-span-2">
           <TagInput
