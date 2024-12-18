@@ -82,7 +82,7 @@ export const ConfirmDialog = ({
               Annuler
             </Button>
             <div className="relative">
-              <div className="relative overflow-hidden">
+              <div className={`relative overflow-hidden ${!canDelete ? 'cursor-not-allowed' : ''}`}>
                 <Button
                   variant="danger"
                   onClick={() => {

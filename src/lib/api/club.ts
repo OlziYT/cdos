@@ -33,6 +33,7 @@ export const clubApi = {
           city: formData.city,
           postal_code: formData.postalCode,
           tags: formData.tags,
+          sport: formData.sport,
           handicap_access: formData.handicapAccess,
           sport_health: formData.sportHealth,
           total_members: 0
@@ -61,6 +62,7 @@ export const clubApi = {
           city: formData.city,
           postal_code: formData.postalCode,
           tags: formData.tags,
+          sport: formData.sport,
           handicap_access: formData.handicapAccess,
           sport_health: formData.sportHealth
         })

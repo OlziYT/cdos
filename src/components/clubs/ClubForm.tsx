@@ -14,6 +14,24 @@ import { TagInput } from "../ui/TagInput";
 import { AddressSearch } from "./AddressSearch";
 import { UploadCloud } from "lucide-react";
 
+const AVAILABLE_SPORTS = [
+  "Football",
+  "Basketball",
+  "Tennis",
+  "Natation",
+  "Athlétisme",
+  "Judo",
+  "Gymnastique",
+  "Cyclisme",
+  "Rugby",
+  "Volleyball",
+  "Handball",
+  "Pétanque",
+  "Badminton",
+  "Escalade",
+  "Karaté"
+] as const;
+
 const clubSchema = z.object({
   name: z.string().min(3, "Le nom doit contenir au moins 3 caractères"),
   committeeId: z.string().min(1, "Le comité est requis"),
@@ -25,6 +43,7 @@ const clubSchema = z.object({
   city: z.string().min(2, "La ville est requise"),
   postalCode: z.string().regex(/^\d{5}$/, "Code postal invalide"),
   tags: z.array(z.string()).default([]),
+  sport: z.string().min(1, "Le sport est requis"),
   handicapAccess: z.boolean().default(false),
   sportHealth: z.boolean().default(false),
 });
@@ -49,6 +68,7 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
     handleSubmit: handleSubmitReactHookForm,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<ClubFormData>({
     resolver: zodResolver(clubSchema),
@@ -140,6 +160,19 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
           error={errors.phone?.message}
           isDark={isDark}
         />
+        <Select
+          label="Sport"
+          {...register("sport")}
+          error={errors.sport?.message}
+          isDark={isDark}
+        >
+          <option value="">Sélectionnez un sport</option>
+          {AVAILABLE_SPORTS.map((sport) => (
+            <option key={sport} value={sport}>
+              {sport}
+            </option>
+          ))}
+        </Select>
         <div>
           <label
             className={`block text-sm font-medium ${
@@ -171,13 +204,15 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
           isDark={isDark}
           readOnly
         />
-        <TagInput
-          name="tags"
-          control={control}
-          label="Mots-clés"
-          error={errors.tags?.message}
-          isDark={isDark}
-        />
+        <div className="col-span-2">
+          <TagInput
+            name="tags"
+            control={control}
+            label="Mots-clés"
+            error={errors.tags?.message}
+            isDark={isDark}
+          />
+        </div>
         <div className="col-span-2">
           <label
             className={`block text-sm font-medium ${
@@ -223,11 +258,19 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
                     onChange={handleImageChange}
                   />
                 </label>
-                <p className={`pl-1 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                <p
+                  className={`pl-1 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
                   ou glisser-déposer
                 </p>
               </div>
-              <p className={`text-xs leading-5 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+              <p
+                className={`text-xs leading-5 ${
+                  isDark ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
                 PNG, JPG, GIF jusqu'à 10MB
               </p>
             </div>
@@ -243,6 +286,8 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
         >
           <Checkbox
             {...register("handicapAccess")}
+            checked={watch("handicapAccess")}
+            onChange={(e) => setValue("handicapAccess", e.target.checked)}
             label="Ce club dispose d'installations pour les personnes en situation de handicap"
             isDark={isDark}
           />
@@ -255,6 +300,8 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
         >
           <Checkbox
             {...register("sportHealth")}
+            checked={watch("sportHealth")}
+            onChange={(e) => setValue("sportHealth", e.target.checked)}
             label="Ce club propose des programmes sport-santé"
             isDark={isDark}
           />

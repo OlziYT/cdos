@@ -11,6 +11,7 @@ export interface Club {
   postal_code: string;
   location?: any;
   tags: string[];
+  sport: string;
   handicap_access: boolean;
   sport_health: boolean;
   total_members?: number;
@@ -27,6 +28,7 @@ export interface ClubFormData {
   city: string;
   postalCode: string;
   tags: string[];
+  sport: string;
   handicapAccess: boolean;
   sportHealth: boolean;
 }
