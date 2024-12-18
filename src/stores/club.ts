@@ -8,7 +8,7 @@ interface ClubStore {
   error: Error | null;
   fetchClubs: () => Promise<void>;
   createClub: (data: ClubFormData, image?: File) => Promise<Club | null>;
-  updateClub: (id: string, data: ClubFormData) => Promise<void>;
+  updateClub: (id: string, data: ClubFormData, image?: File | null) => Promise<void>;
   deleteClub: (id: string) => Promise<void>;
 }
 
@@ -45,10 +45,10 @@ export const useClubStore = create<ClubStore>((set, get) => ({
     }
   },
 
-  updateClub: async (id: string, data: ClubFormData) => {
+  updateClub: async (id: string, data: ClubFormData, image?: File | null) => {
     set({ isLoading: true, error: null });
     try {
-      const updatedClub = await updateClub(id, data);
+      const updatedClub = await updateClub(id, data, image);
       if (updatedClub) {
         set((state) => ({
           clubs: state.clubs.map((club) =>

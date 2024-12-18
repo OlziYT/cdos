@@ -27,9 +27,9 @@ export const EditCommitteePage = () => {
     rna: committee.rna,
     email: committee.email,
     phone: committee.phone,
-    street: committee.address.street,
-    city: committee.address.city,
-    postalCode: committee.address.postalCode,
+    street: committee.street,
+    city: committee.city,
+    postalCode: committee.postal_code,
   };
 
   const handleSubmit = async (data: CommitteeFormData) => {

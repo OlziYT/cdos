@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { ClubsPage } from "./pages/clubs/ClubsPage";
@@ -11,6 +11,7 @@ import { LoginPage } from "./pages/Login";
 import { HomePage } from "./pages/public/HomePage";
 import { SearchPage } from "./pages/public/SearchPage";
 import { useAuthStore } from "./stores/auth";
+import { supabase } from "./lib/supabase"; // Import supabase instance
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuthStore();
@@ -19,6 +20,26 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const { user } = useAuthStore();
+
+  useEffect(() => {
+    // Vérifier et synchroniser la session au démarrage
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        useAuthStore.setState({ user: session.user });
+      }
+    });
+
+    // Écouter les changements de session
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      useAuthStore.setState({ user: session?.user || null });
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>

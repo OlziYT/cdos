@@ -35,11 +35,16 @@ export const AddressSearch = ({
   const [search, setSearch] = useState(defaultValue);
   const [suggestions, setSuggestions] = useState<Address[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
+  const [isSelected, setIsSelected] = useState(!!defaultValue);
+
+  useEffect(() => {
+    setSearch(defaultValue);
+    setIsSelected(!!defaultValue);
+  }, [defaultValue]);
 
   useEffect(() => {
     const searchAddress = async () => {
-      if (isSelected) {
+      if (isSelected || !search || search === defaultValue) {
         return;
       }
 
@@ -73,7 +78,7 @@ export const AddressSearch = ({
 
     const timer = setTimeout(searchAddress, 300);
     return () => clearTimeout(timer);
-  }, [search, isSelected]);
+  }, [search, isSelected, defaultValue]);
 
   const handleSelect = (address: Address) => {
     const formattedAddress = {

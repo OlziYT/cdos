@@ -43,7 +43,7 @@ const clubSchema = z.object({
   city: z.string().min(2, "La ville est requise"),
   postalCode: z.string().regex(/^\d{5}$/, "Code postal invalide"),
   tags: z.array(z.string()).default([]),
-  sport: z.string().min(1, "Le sport est requis"),
+  sports: z.string().min(1, "Le sport est requis"),
   handicapAccess: z.boolean().default(false),
   sportHealth: z.boolean().default(false),
 });
@@ -75,6 +75,8 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
     defaultValues: initialData,
   });
 
+  const [coordinates, setCoordinates] = useState<{ lat: string; lon: string } | null>(null);
+
   const handleAddressSelect = (address: {
     street: string;
     city: string;
@@ -85,12 +87,19 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
     setValue("street", address.street, { shouldValidate: true });
     setValue("city", address.city, { shouldValidate: true });
     setValue("postalCode", address.postal_code, { shouldValidate: true });
+    setCoordinates(address.raw_coordinates);
   };
 
   const street = useWatch({ control, name: "street" });
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.image_url || null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialData?.image_url) {
+      setPreviewUrl(initialData.image_url);
+    }
+  }, [initialData]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -104,9 +113,18 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
     }
   };
 
+  const handleImageDelete = () => {
+    setPreviewUrl(null);
+    setSelectedImage(null);
+    setValue("image_url", null); // Mettre à null dans le formulaire
+  };
+
   const onSubmitForm = handleSubmitReactHookForm(async (data: ClubFormData) => {
     try {
       console.log("Données du formulaire avant soumission:", data);
+      if (coordinates) {
+        data.raw_coordinates = `${coordinates.lat},${coordinates.lon}`;
+      }
       await onSubmit(data, selectedImage);
     } catch (error) {
       console.error("Erreur lors de la soumission du formulaire:", error);
@@ -162,8 +180,8 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
         />
         <Select
           label="Sport"
-          {...register("sport")}
-          error={errors.sport?.message}
+          {...register("sports")}
+          error={errors.sports?.message}
           isDark={isDark}
         >
           <option value="">Sélectionnez un sport</option>
@@ -228,51 +246,66 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
           >
             <div className="text-center">
               {previewUrl ? (
-                <div className="mb-4">
+                <div className="relative mb-4 inline-block">
                   <img
                     src={previewUrl}
                     alt="Aperçu"
-                    className="mx-auto h-32 w-32 object-cover rounded-lg"
+                    className="h-32 w-32 object-cover rounded-lg"
                   />
+                  <button
+                    type="button"
+                    onClick={handleImageDelete}
+                    className={`absolute -top-2 -right-2 rounded-full p-1 ${
+                      isDark 
+                        ? "bg-gray-700 text-gray-300 hover:bg-gray-600" 
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
                 </div>
               ) : (
-                <UploadCloud
-                  className={`mx-auto h-12 w-12 ${
-                    isDark ? "text-gray-400" : "text-gray-300"
-                  }`}
-                />
-              )}
-              <div className="mt-4 flex text-sm leading-6">
-                <label
-                  htmlFor="club-image"
-                  className={`relative cursor-pointer rounded-md font-semibold ${
-                    isDark ? "text-blue-400" : "text-blue-600"
-                  } focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500`}
-                >
-                  <span>Choisir une image</span>
-                  <input
-                    id="club-image"
-                    type="file"
-                    className="sr-only"
-                    accept="image/*"
-                    onChange={handleImageChange}
+                <>
+                  <UploadCloud
+                    className={`mx-auto h-12 w-12 ${
+                      isDark ? "text-gray-400" : "text-gray-300"
+                    }`}
                   />
-                </label>
-                <p
-                  className={`pl-1 ${
-                    isDark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  ou glisser-déposer
-                </p>
-              </div>
-              <p
-                className={`text-xs leading-5 ${
-                  isDark ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                PNG, JPG, GIF jusqu'à 10MB
-              </p>
+                  <div className="mt-4 flex justify-center text-sm leading-6">
+                    <label
+                      htmlFor="club-image"
+                      className={`cursor-pointer rounded-md font-semibold ${
+                        isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-500"
+                      }`}
+                    >
+                      <span>Choisir une image</span>
+                      <input
+                        id="club-image"
+                        type="file"
+                        className="sr-only"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                    <p
+                      className={`pl-1 ${
+                        isDark ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
+                      ou glisser-déposer
+                    </p>
+                  </div>
+                  <p
+                    className={`text-xs leading-5 ${
+                      isDark ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
+                    PNG, JPG, GIF jusqu'à 10MB
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -286,8 +319,10 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
         >
           <Checkbox
             {...register("handicapAccess")}
-            checked={watch("handicapAccess")}
-            onChange={(e) => setValue("handicapAccess", e.target.checked)}
+            checked={watch("handicapAccess") || false}
+            onChange={(e) => {
+              setValue("handicapAccess", e.target.checked, { shouldValidate: true });
+            }}
             label="Ce club dispose d'installations pour les personnes en situation de handicap"
             isDark={isDark}
           />
@@ -300,8 +335,10 @@ export const ClubForm = ({ onSubmit, isLoading, initialData, submitText = "Crée
         >
           <Checkbox
             {...register("sportHealth")}
-            checked={watch("sportHealth")}
-            onChange={(e) => setValue("sportHealth", e.target.checked)}
+            checked={watch("sportHealth") || false}
+            onChange={(e) => {
+              setValue("sportHealth", e.target.checked, { shouldValidate: true });
+            }}
             label="Ce club propose des programmes sport-santé"
             isDark={isDark}
           />

@@ -11,10 +11,11 @@ export interface Club {
   postal_code: string;
   location?: any;
   tags: string[];
-  sport: string;
+  sports: string[];
   handicap_access: boolean;
   sport_health: boolean;
   total_members?: number;
+  image_url?: string;
 }
 
 export interface ClubFormData {
@@ -28,7 +29,9 @@ export interface ClubFormData {
   city: string;
   postalCode: string;
   tags: string[];
-  sport: string;
+  sports: string;
   handicapAccess: boolean;
   sportHealth: boolean;
+  image_url?: string;
+  raw_coordinates?: string;
 }
